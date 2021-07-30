@@ -1,9 +1,10 @@
+// This javascript object contains all the functions called indistinctly by each other object (user article request comments file)
 var tools = {
   init: function(){   
     this.dataStorage()
     this.states()    
   },  
-  
+  //called by tools.selector(data.autors) in request..js, it fill selector with the result of database request
   selector: function(data){  
     let str = ''
     data.forEach(function(autor, index){
@@ -11,7 +12,7 @@ var tools = {
     })
     document.getElementById('autor').innerHTML = str
   },
-
+  // swaps the default name with the selected name
   author: function(elem){
     console.log(elem)
     const lem = document.getElementById('writer').text
@@ -23,7 +24,7 @@ var tools = {
     glob.FilterObject.author = selectAuthor   
   },
   
-  // if localstorage exist
+  // at installation check if localstorage exist
   dataStorage : function(){
     if(!localStorage.getItem("xsrfToken")){
       localStorage.setItem("xsrfToken", ''); 
@@ -34,7 +35,7 @@ var tools = {
       console.log("localStorage nickname created");
     }
   },
-
+  // check if the user is signup or signin
   states: function(){
     const check = this.getValueLocalStorage()
     if(check.nickname !== '' && check.xsrfToken !== ''){
@@ -45,7 +46,7 @@ var tools = {
       this.isOut()
     }
   },  
-
+  // it's called at each return of the backend to diplay the result
   callAlert: function(type, msg) {
     const typ = 'alert-' + type 
     this.addClass('alarm', typ)
@@ -118,7 +119,7 @@ var tools = {
     const el = this.getId(id)
     el.classList.remove(nameClass)
   },
-
+  // called to display link available in nav if the user is login
   isIn: function(){
     const isins = document.querySelectorAll('.in')
     isins.forEach(function(isin, index){
@@ -129,7 +130,7 @@ var tools = {
       isout.classList.add('hide')
     })
   },
-
+  // called to display link available in nav if the user is logout
   isOut: function(){
     const isouts = document.querySelectorAll('.out')
     isouts.forEach(function(isout, index){
@@ -157,7 +158,7 @@ var tools = {
     const cleanData = data.replace(new RegExp('<[^>]*>', 'g'), '')
     return cleanData
   },
-  
+  // called when the user write a comment
   countCaract: function(objettextarea, maxlength){
     const res = maxlength - objettextarea.value.length
     document.getElementById("rem_post").innerHTML = res
@@ -167,7 +168,7 @@ var tools = {
       alert('max size '+maxlength+'!');
      }
   },
-
+  // called when the user use the filter
   search: function(){
     document.getElementById('set').value = 0
     const obj = glob.FilterObject
@@ -175,7 +176,7 @@ var tools = {
     const pag = tools.getPagination()    
     articles.getArticles(pag[0], pag[1], obj)
   },
-
+  // called when the user clear the filter
   clear: function(){
     document.getElementById('set').value = 0
     document.querySelector('#popular').checked = false
@@ -229,7 +230,7 @@ var tools = {
     const obj = glob.FilterObject    
     articles.getArticles(set, row, obj)
   },
-
+  // called by request.js to update the button previous and next after the request is display
   updatePagination: function(){
     const offset = document.getElementById('set').value
     const howmany = document.getElementById('howmany').value
@@ -273,7 +274,7 @@ var tools = {
       }
     }
   },
-
+  // called by all authentication request to get xrf token in local storage
   getToken: function(){
     let xsrfToken = localStorage.getItem('xsrfToken');
     if (!xsrfToken) {
@@ -291,8 +292,10 @@ var tools = {
   }
 }
 
-// equivalent à  $(document).ready(function(){})
-window.addEventListener("DOMContentLoaded", (event) => {  
+// equal to  $(document).ready(function(){})
+window.addEventListener("DOMContentLoaded", (event) => {
+  console.log("DOM loaded and analyzed")
+  // this the only only part of jquery 
   $('#start').datepicker({
     clearBtn: true,
     format: "yyyy-mm-dd",
@@ -309,8 +312,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     const dat = event.format(0,"yyyy-mm-dd")
     glob.FilterObject.dateEnd = dat + ' 00:00:00'
   });
-  console.log("DOM loaded and analyzed");
-  console.log(glob.FirstExecution)
+  
   tools.init()
   if (location.href.match(/signup/) || location.href.match(/signin/)) {
     tools.isOut()

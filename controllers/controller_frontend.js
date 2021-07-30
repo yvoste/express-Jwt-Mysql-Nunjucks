@@ -1,4 +1,7 @@
-
+/*
+This controller only load layouts
+doc nunjucks https://mozilla.github.io/nunjucks/templating.html
+*/
 const home = (req, res, next) => {
   res.render('layouts/home.html', {home:{
       heading:"mon TitreHOME",
@@ -33,12 +36,9 @@ const signin = (req, res, next) => {
   res.render('layouts/signin.html')
 }
 
-
 const logout = (req, res, next) => {
   res.render('layouts/logout.html')
 }
-
-
 
 module.exports = {
   home,

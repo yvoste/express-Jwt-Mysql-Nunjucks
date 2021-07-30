@@ -1,11 +1,11 @@
 require("dotenv").config();
 
 var path = require("path")
-const morgan = require('morgan')
-let nunjucks = require("nunjucks")
-const cors = require("cors")
+const morgan = require('morgan')  // dev to check request in temrinal
+let nunjucks = require("nunjucks") // templating engine
+const cors = require("cors") 
 const express = require("express")
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser') // read cookie in request
 const app = express()
 
 app.use(express.urlencoded({ extended: false }))

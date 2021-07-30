@@ -1,7 +1,8 @@
+/*
+This controller is in charge of managing the actions concerning the articles, the comments and the images. 
+*/
 const pool = require('../config/db.js')
-const multer = require("multer")
 let nunjucks = require("nunjucks")
-const Joi = require("joi")
 const fs = require('fs')
 const path = require('path')
 // Another way to write the same thing using object destruction in ES6. 
@@ -13,10 +14,15 @@ const { join } = require('path');
 
 /**
  * Get list of articles
+ * if the user is an administrator he has the role value 1 and all the items will be loaded.
+  otherwise only the articles that have been published will be loaded as well as the articles of the author even if they have not been published yet.
+  The pagination will determined by the two varibles offset and row
  */
  const articles = async (req, res, next) => { 
-  console.log('___articles___')
+  console.log('ARTICLES')
   //console.log(req.body)
+   // filter, this object contains all choiced element in filter (date_start date_end, autor, popular)
+   // if the value of each element is empty it does nothing otherwise it modifies the request
   const filter = checkFilter(req.body)
   //console.log(filter)
   const set = parseInt(req.query.set) //- 1
@@ -26,20 +32,16 @@ const { join } = require('path');
     const msg = 'An error occured with pagination'    
     return res.send({msg: msg, err:1})
   }
-  let sqlO = 'SELECT `nickname` FROM `user` '
-  sqlO += ' WHERE `nickname` = ?' 
-  let val = [req.body.userIs]
-  const [raws, fields] = await pool.execute (sqlO, val )
-    //console.log(req.params.id)
-    const tautor = raws[0]
-console.log(tautor.nickname)
+   
+  let currentUser = [req.body.userIs] // this variable contains the nickname of the current user
+
   //construction of a sql query as a concatenated string
   let sql = 'SELECT a.*, COUNT(c.`id_comment`) nbcomments FROM `articles` a'
   sql += ' LEFT JOIN `comments` c'
   sql += ' ON a.`id_article` = c.`id_article`'
   sql += ' WHERE '
   if(parseInt(req.user.role) != 1 && req.body.author == '') {
-    sql += ' a.`status` = 1 OR a.`author` = "' + tautor.nickname + '"'
+    sql += ' a.`status` = 1 OR a.`author` = "' + currentUser + '"'
   } else if (parseInt(req.user.role) != 1 && req.body.author != '' && typeof req.body.author === 'string') {
     sql += ' a.`status` = 1 AND a.`author` = "' + req.body.author  + '"'
   } else if (parseInt(req.user.role) == 1 && req.body.author != '' && typeof req.body.author === 'string') {
@@ -48,19 +50,18 @@ console.log(tautor.nickname)
     sql += ' a.`status` IN (0 , 1)'
   }
   if(filter !== '') { // string return by function checkFilter between date
-    //console.log('filter' + filter)
     sql += filter
   }
   sql += ' GROUP BY a.`id_article`' 
   if(parseInt(req.body.popular) != 0) {
-    //console.log('popular' + req.body.popular)
     sql += ' ORDER BY a.`popular` DESC'
   }
   if(row_count !== 0) {  
     sql += ' LIMIT '+ offset + ', ' + row_count
   }
-  console.log(sql)
-  // SQL1 query
+  //console.log(sql)
+
+  // SQL1 query this request allows to get number of comments for each articles
   let sql1 = 'SELECT a.`id_article`, COUNT(*) FROM `articles` a'
   sql1 += ' WHERE '
   if(parseInt(req.user.role) != 1) {
@@ -69,15 +70,12 @@ console.log(tautor.nickname)
     sql1 += ' a.`status` = 1 OR a.`status` = 0'
   }
   if(req.body.author != '' && typeof req.body.author === 'string') {
-    //console.log('author' + req.body.author)
     sql1 += ' AND a.`author` = "' + req.body.author  + '"'
   }
   if(filter !== '') { // string return by function checkFilter between date
-    //console.log('filter' + filter)
     sql1 += filter
-  }
-  //console.log(sql)
- // console.log(sql1)
+  }  
+  // console.log(sql1)
   try {
     const [rows, fields] = await pool.execute (sql)
     const articles = rows
@@ -95,7 +93,8 @@ console.log(tautor.nickname)
         }
       })
     }
-    //console.log(articles) 
+    //console.log(articles)
+    // injected partials (a string) in layouts. This is a feautre of Nunjucks
     const template = fs.readFileSync(path.join(__dirname, '../', 'views/partials/listArticles.html'), 'utf8');   
     const output = nunjucks.renderString(template.toString(), {
       articles: articles,
@@ -117,8 +116,12 @@ console.log(tautor.nickname)
  const add = async(req, res, next) => {
   console.log('ADD_ARTICLE')
   //console.log(req.body)  
-  try { 
-    const result = await pool.execute ('INSERT INTO articles (`title`, `content`, `url_img`, `author`, `status`, `date_add`, `date_update`) VALUES (?, ?, ?, ?, ?, ?, ?)', [req.body.title, req.body.content, req.body.file, req.body.author, req.body.status, dateIs, dateIs])
+  try {
+    let sql = 'INSERT INTO articles'
+    sql += ' (`title`, `content`, `url_img`, `author`, `status`, `date_add`, `date_update`)'
+    sql += ' VALUES (?, ?, ?, ?, ?, ?, ?)'
+    const values = [req.body.title, req.body.content, req.body.file, req.body.author, req.body.status, dateIs, dateIs]
+    const result = await pool.execute (sql, values)
 
     const ret = result[0].insertId
     if(!ret){
@@ -134,18 +137,20 @@ console.log(tautor.nickname)
 }
 
 /**
- * Get article by id and his comments
+ * Get article and his comments by id 
  */
 const article = async (req, res) => { 
   
   let sql = 'SELECT * FROM `articles` '
-  sql += ' WHERE `articles`.`id_article` = ?'
+  sql += ' WHERE `articles`.`id_article` = ?'  
 
   let sql1 = 'SELECT * FROM `comments` '
-    sql1 += ' WHERE `comments`.`id_article` = ?'
+  sql1 += ' WHERE `comments`.`id_article` = ?'
+
+  const valu = [req.params.id]
 
   try {    
-    const [raws, fields] = await pool.execute (sql, [req.params.id] )
+    const [raws, fields] = await pool.execute (sql, valu)
     //console.log(req.params.id)
     const article = raws[0]
     if (article.url_img !== "") {
@@ -163,12 +168,14 @@ const article = async (req, res) => {
       }
     })    
 
-    const [rows, faelds] = await pool.execute (sql1, [req.params.id])
+    const [rows, faelds] = await pool.execute (sql1, valu)
     const comments = rows
-    let autorized = 0   
+    // this variable is used in front to display the delete button if the user is the autor of the article
+    let autorized = 0  
     if(req.user.nickname === article.author){
       autorized = 1
     }
+    // injected partials (a string) in layouts. This is a feautre of Nunjucks
     const template = fs.readFileSync(path.join(__dirname, '../', 'views/partials/article.html'), 'utf8');
     //console.log(template)
     const output = nunjucks.renderString(template.toString(), {
@@ -185,12 +192,16 @@ const article = async (req, res) => {
   }
 }
 
+/**
+ * To send an article for modifying it 
+ */
 const editArticle = async (req, res) => { 
   let sql = 'SELECT * FROM `articles` '
   sql += ' WHERE `articles`.`id_article` = ?'
+  const val = [req.params.id] 
 
   try {    
-    const [raws, fields] = await pool.execute (sql, [req.params.id] )
+    const [raws, fields] = await pool.execute (sql, val)
     //console.log(req.params.id)
     const article = raws[0]
     if (article.url_img !== "") {
@@ -209,7 +220,7 @@ const editArticle = async (req, res) => {
         // do difference between now and dateUp, convert in hours, set result into the object
       }
     })
-
+    // injected partials (a string) in layouts. This is a feautre of Nunjucks
     const template = fs.readFileSync(path.join(__dirname, '../', 'views/partials/edit_article.html'), 'utf8');
     //console.log(template)
     const output = nunjucks.renderString(template.toString(), {
@@ -223,6 +234,9 @@ const editArticle = async (req, res) => {
   }
 }
 
+/*
+Update an article
+*/
 const update= async(req, res, next) => {
   console.log('UPDATE_ARTICLE')
   //console.log(req.body)  
@@ -241,7 +255,9 @@ const update= async(req, res, next) => {
   }
 }
 
-
+/*
+Delete an article
+*/
 const delArticle = async (req, res) => {
   console.log(req.body)
   try { 
@@ -261,6 +277,9 @@ const delArticle = async (req, res) => {
 
 }
 
+/*
+This feature is only available if you are connected as admin
+*/
 const publish = async (req, res) => {
   console.log(req.body)
   try {
@@ -287,8 +306,10 @@ const addComment = async (req, res) => {
   console.log('Add----Comment')
   console.log(req.body)
   try {
+    // this is to increment the value of te number of comments in articles table
     const sqlS = 'SELECT `popular` FROM `articles`  WHERE `id_article` = ?'
-    const [rows, fields] = await pool.execute (sqlS, [req.body.id_article])
+    const vol = [req.body.id_article]
+    const [rows, fields] = await pool.execute (sqlS, vol)
     const pop = rows[0].popular + 1
     console.log(pop)
     
@@ -301,10 +322,10 @@ const addComment = async (req, res) => {
     const result = await pool.execute (sql , values)    
     const ret = result[0].insertId
     if(ret){
+      //the incremented value is inserted in the DB only if the comment has well been  inserted.
       await pool.execute (sql1, value)
       res.send({'msg': 'Comment added succefully'})
-    }
-    
+    }    
   } catch (error){
     //console.log(error.message)
     res.send({'msg': error.message})
@@ -312,15 +333,21 @@ const addComment = async (req, res) => {
 
 }
 
+/*
+Delete comment
+*/
 const delComment = async (req, res) => {
   console.log(req.body)
   try { 
     const sql = 'DELETE FROM `comments` WHERE `id_comment` = ? AND `id_article` = ?'
-    const sql1 = 'UPDATE `articles` SET `popular` = `popular` - 1  WHERE `id_article` = ?'
     const value = [req.body.idC, req.body.id]
+
+    const sql1 = 'UPDATE `articles` SET `popular` = `popular` - 1  WHERE `id_article` = ?'    
     const val = [req.body.id]
+
     const result = await pool.execute (sql, value)
     if (result[0].affectedRows === 1 ){
+      // the decremented value is inserted in the DB only if the comment has well been deleted.
       await pool.execute (sql1, val)
     }
     //console.log(result[0].affectedRows)
@@ -337,7 +364,7 @@ const delComment = async (req, res) => {
  * Send url file uploaded
  */
  const upload = async(req, res, next) => {
-  //console.log(req.file)
+  //nothing is doing here, all the job had been realized in the middleware before, this is just the end of the request
   try {
     res.send({'msg': req.file})
   } catch (error){
@@ -346,16 +373,14 @@ const delComment = async (req, res) => {
   }
 }
 
-
-
-const delFile = async (req, res) => {
-  console.log(req.user)
-  console.log(req.body)
+/*
+remove file in folder (public/nickname of user/filename)
+*/
+const delFile = async (req, res) => {  
   const pith = path.join(__dirname, '../', '/public/img/' + req.user.nickname + '/' + req.body.name)
   console.log(pith)
   try { 
-    fs.unlinkSync(pith);
-
+    fs.unlinkSync(pith)
     res.send({'msg': 'removed file successfully'})
   } catch (error){
     //console.log(error.message)
@@ -364,6 +389,9 @@ const delFile = async (req, res) => {
 
 }
 
+/*
+This function is called to fill the selector who contains the authors in the filter
+*/
 const autor = async (req, res) => {
   let sql = 'SELECT `author` FROM `articles` '
   sql += ' GROUP BY `author`'  
@@ -414,22 +442,3 @@ module.exports = {
   autor
   
 }
-
-/* pour mémoire
-for (let obj of articles) {
-      console.log('boucle')      
-      Object.keys(obj).forEach(async (key) => {
-        if(key == 'id_article'){
-        //console.log(key);        // the nickname of the current key.
-        console.log(obj[key]); // the value of the current key.
-        const [rows, fields] = await pool.execute ('SELECT COUNT (*)'
-                                                + ' FROM `comments`'                                        
-                                                + ' WHERE `comments`.`id_article` =' + obj[key]) 
-        obj.nbcomments = rows
-        console.log(rows)                                
-        
-      }
-      });
-      console.log(obj)
-    }
-    */

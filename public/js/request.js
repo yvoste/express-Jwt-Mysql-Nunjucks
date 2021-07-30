@@ -1,4 +1,5 @@
 var objReq = {
+  //it is called when the query call a new page or only put the result into an element     
   request: function(url, reqOpts, redir, user){    
     fetch(url, reqOpts)
     .then( response => {
@@ -51,7 +52,8 @@ var objReq = {
               tools.callAlert('success', data.msg)
             }     
             break
-        }        
+        }
+        // the settimeout is to display alert before the page change        
         setTimeout(function(){window.location.href = redir}, 2000)
         
       }
@@ -61,6 +63,8 @@ var objReq = {
       tools.callAlert('danger', error.msg)
     })
   },
+
+  // it is called when the query injects the result into the mode
   requestInclusing: function(url, reqOpts, id_contenu, doingAfter){    
     fetch(url, reqOpts)
     .then( response => {
@@ -97,6 +101,7 @@ var objReq = {
         console.log('LOGOUT')
         localStorage.setItem('xsrfToken', '')
         localStorage.setItem('nickname', '')
+        // the settimeout is to display alert before the page change  
         setTimeout(function(){window.location.href = glob.APIURL}, 2000)
         
       } 

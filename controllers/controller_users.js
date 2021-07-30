@@ -1,6 +1,18 @@
+/*
+This controller is in charge of managing the actions concerning the users (signup, signin,  updating profil, logout)
+
+Process:
+when a user signup, a xrsf token is created (bcrypt is used but you can use cryptjs or what you want to create a random key) this key is stocked in local storage on browser and it's send in headers at each request.
+This token is used to create a access_token (short duration life) and a refresh_token (long duration life) with JsonWebToken.
+We put each key in a different cookie with a long maxAge because the cookies are just vehicles for token
+At each request
+Authentication:
+For each request that requires authentication, the cookie acces-token is analized, if the access_token is expired  we check validity of the refresh token in the refresh token cookie and we chekc in databse if the refresh token is equal and if the user is actif if it's right we renew the access_token and the request contine otherwise the server return an error
+For signup the password is hashed by bcrypt
+*/
 const pool = require('../config/db.js')
 const bcrypt = require("bcrypt")
-const Joi = require("joi")
+const Joi = require("joi")  // it used to check validoty of javbascript object
 const jwt = require("jsonwebtoken")
 let nunjucks = require("nunjucks")
 const fs = require('fs')
@@ -13,8 +25,8 @@ const { join } = require('path');
 */
 
 
-// Call when the user register to blog
-// insert data in DB, give him a role value and generate a token
+// Called when the user register to blog
+// insert data in DB, give him a role value and generate a access_token,refresh_token and cookies
 const signup = async (req, res, next) => {
   console.log(req.body) 
   try {
@@ -40,7 +52,7 @@ const signup = async (req, res, next) => {
     const result = await pool.execute (sql, value)
     user.id_user = result[0].insertId
 
-    /* On créer le token CSRF */
+    /* create token CSRF */
     const sel = await bcrypt.genSalt(5)    
     const xsrfToken = await bcrypt.hash(user.nickname, sel)
     console.log(xsrfToken)
@@ -57,20 +69,20 @@ const signup = async (req, res, next) => {
       return res.json({msg : 'failed insert refreshToken i DB'})
     }
     
-    /* On créer le cookie contenant le JWT */
+    /* create JWT */
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: false,  // true only with https
       maxAge: parseInt(process.env.maxAge)  // one year
     });
  
-    /* On créer le cookie contenant le refresh token */
+    /* create refresh token */
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: false,  // true only with https
       maxAge: parseInt(process.env.maxAge)  // one year
-    });
-    console.log('msg: User was registered successfully!')
+    })
+
     res.json({
       msg: 'User was registered successfully!',
       id_user: user.id_user,
@@ -84,11 +96,10 @@ const signup = async (req, res, next) => {
   }
 }
 
-// Call when after the user is logout or he delete his token
+// Called when the user signin
 const signin = async (req, res, next) => {
-  console.log(req.body.email)
+  //console.log(req.body.email)
   try {
-    // email already checked in verify_siginin
     let sql = 'SELECT u.* FROM `user` u'
     sql += ' LEFT JOIN `authuser` a'
     sql += ' ON u.`id_user` = a.`id_user`'
@@ -116,16 +127,16 @@ const signin = async (req, res, next) => {
       return res.json({msg: msg, err:1})
     } 
     console.log(user)
-    /* On créer le token CSRF */
+    /*create CSRF */
     const sel = await bcrypt.genSalt(5)    
     const xsrfToken = await bcrypt.hash(user.nickname, sel)
-    console.log(xsrfToken)
+    //console.log(xsrfToken)
 
     const ret = createToken(user, xsrfToken)
     const accessToken = ret[0]
     const refreshToken = ret[1]
-    console.log('refreshToken')
-    console.log(refreshToken)
+    
+    //console.log(refreshToken)
     
     const sql1 = 'UPDATE `authuser` SET `refreshToken` = ?, `date_update` = ?  WHERE `id_user` = ? AND `active` = 1'
     const values = [refreshToken, dateIs, user.id_user]
@@ -135,14 +146,14 @@ const signin = async (req, res, next) => {
       return res.json({msg: 'update refresh token in DB failed'})
     } 
 
-    /* On créer le cookie contenant le access token */
+    /* create cookie access token */
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: false,  // true only with https
       maxAge: parseInt(process.env.maxAge)  // one year
     })
  
-    /* On créer le cookie contenant le refresh token */
+    /* create cookie refresh token */
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: false,  // true only with https
@@ -161,8 +172,9 @@ const signin = async (req, res, next) => {
   }
 }
 
+
+// called to get  profil of user in database
 const profil = async (req, res, next) => {
-  //console.log(req.params.id_user)
   try {
     const [rows, fields] = await pool.execute ('SELECT * FROM `user`  WHERE `id_user` = ?', [req.user.id_user]) 
     const result = rows[0]
@@ -170,31 +182,30 @@ const profil = async (req, res, next) => {
 
     if(!result) 
       return res.status(400).send("Invalid identifiant");      
-    
+    // this is used to injected partials (a string) in a layouts 
     const template = fs.readFileSync(path.join(__dirname, '../', 'views/partials/profil.html'), 'utf8');
     const output = nunjucks.renderString(template.toString(), {
       nickname: result.nickname,
       email: result.email,
     })
-    //console.log(output)
-    res.json({content:output})
-    
+    res.json({content:output}) 
   } catch (error){
     res.json({msg: error.message})
   }
 }
 
+
+// called when the user update his profil
 const update = async (req, res, next) => {  
   console.log(req.body) 
   try {
-    // check validity of data
     const user = {
       id_user: req.user.id_user,
       nickname: req.body.nickname,
       email: req.body.email,
       role: req.user.role,
-    }
-
+    }    
+    // check validity of data
     const { error } = validateUp(user);
     if (error) {
       return res.json({msg: error.details[0].message})
@@ -208,13 +219,12 @@ const update = async (req, res, next) => {
     /* On créer le token CSRF */
     const sel = await bcrypt.genSalt(5)    
     const xsrfToken = await bcrypt.hash(user.nickname, sel)
-    console.log(xsrfToken)
+    //console.log(xsrfToken)
 
     const ret = createToken(user, xsrfToken)
     const accessToken = ret[0]
     const refreshToken = ret[1]
-    console.log('refreshToken')
-    console.log(refreshToken)
+    //console.log(refreshToken)
     
     const sql1 = 'UPDATE `authuser` SET `refreshToken` = ?, `date_update` = ?  WHERE `id_user` = ? AND `active` = 1'
     const values = [refreshToken, dateIs, user.id_user]
@@ -224,14 +234,14 @@ const update = async (req, res, next) => {
       return res.json({msg: 'insert refresh token in DB failed'})
     } 
 
-    /* On créer le cookie contenant le access token */
+    /* create cookie access token */
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: false,  // true only with https
       maxAge: parseInt(process.env.maxAge)  // one year
     })
  
-    /* On créer le cookie contenant le refresh token */
+    /* create cookie refresh token */
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: false,  // true only with https
@@ -252,9 +262,9 @@ const update = async (req, res, next) => {
 }
 
 const logout = async (req, res, next) => {
-  //console.log(req.params.id_user)
+  //nothing is executed on server all the job is doing in front-end
   try {
-    //TODO delete refrehToken in DB
+    //the xrf token who is stocked in loca storage on browser will be deleted when request will be return successfullly
     res.json({msg: 'logout successfully'})
     
   } catch (error){
@@ -296,13 +306,11 @@ const createToken = (user, xsrfToken) => {
     { id_user: user.id_user, nickname: user.nickname, role: user.role },
     process.env.refreshTokenSecret,
     { expiresIn: parseInt(process.env.refreshTokenLife)}
-  )
-  //console.log(token)
-  //console.log(refreshToken)
+  )  
   return [token, refreshToken]
 }
-
-const dateIs = new Date().toISOString().slice(0, 19).replace('T', ' ')
+// create a date with the format like datetime in mysql
+const dateIs = new Date().toISOString().slice(0, 19).replace('T', ' ') 
 
 module.exports = {
   signin,

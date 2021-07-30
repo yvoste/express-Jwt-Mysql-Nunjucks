@@ -33,7 +33,7 @@ var users = {
         body: JSON.stringify(user) // body data type must match "Content-Type" header
       }
       const _url = glob.APIURL + 'api/user/signup/'
-      const redir = glob.APIURL + 'list'      
+      const redir = glob.APIURL + 'list'
       objReq.request(_url, requestOptions, redir, 'sign')
     } else {
       tools.callAlert('danger', ret.error)
@@ -135,22 +135,3 @@ var users = {
     window.location.href = glob.APIURL + 'list'  
   }
 }
-
-
-
-
-/*pour memoire
-fetch(_url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      ache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url  
-      body: JSON.stringify(user) // body data type must match "Content-Type" header
-    })
-
-*/

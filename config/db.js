@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+// doc https://www.npmjs.com/package/mysql2
 
 const pool = mysql.createPool({
   host: process.env.HOST,
@@ -21,6 +22,7 @@ pool.execute('CREATE TABLE IF NOT EXISTS `user` '
 + ' `date_update` VARCHAR(255),'
 + ' UNIQUE KEY unique_email (email))'
 + ' ENGINE = InnoDB DEFAULT CHARSET = utf8')
+// unique key is to prevent duplicate mail
 
 pool.execute('CREATE TABLE IF NOT EXISTS `articles` '
 + '(`id_article` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,'
@@ -43,6 +45,8 @@ pool.execute('CREATE TABLE IF NOT EXISTS `comments` '
 + ' FOREIGN KEY (`id_article`) REFERENCES `articles` (`id_article`) ON DELETE CASCADE)'
 + ' ENGINE = InnoDB  DEFAULT CHARSET = utf8')
 
+// foreign key is to link article with comments and to delete comment when deleting article
+
 pool.execute('CREATE TABLE IF NOT EXISTS `authuser` '
 + '(`id_user` INT (11) NOT NULL,'
 + ' `refreshToken` VARCHAR (255) NOT NULL,'
@@ -53,5 +57,6 @@ pool.execute('CREATE TABLE IF NOT EXISTS `authuser` '
 + ' FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE)'
 + ' ENGINE = InnoDB  DEFAULT CHARSET = utf8')
 
+// the foreign key allows to authenticate the user with the user and to delete the authenticator when deleting the user, the active column allows to manage the user, if the administrator sets it to 0 then the user is no longer allowed to connect and when automatic renew of token he will be banned, otherwise it's fine.
 module.exports =  pool
 

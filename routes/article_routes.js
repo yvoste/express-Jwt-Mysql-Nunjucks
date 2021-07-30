@@ -6,8 +6,6 @@ module.exports = app => {
   const router = express.Router()
   const article = require("../controllers/controller_articles")
   
-  
-  
   router.get('/article/:id', auth, authRefresh, article.article)
   router.get('/edit_article/:id', auth, authRefresh, article.editArticle)
   router.get('/autor/', auth, authRefresh, article.autor)

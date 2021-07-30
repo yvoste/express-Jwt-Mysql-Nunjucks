@@ -1,3 +1,16 @@
+
+/*
+This middleware is called by all authentication routes after the auth.js middleware.
+if the user object is not undefined we do nothing, we continue to the controller
+If the user object is undefined
+we check the presence of the refreh_token cookie and the x-xrf-token in the headers
+(for the record, the x-xrf-token is created when the user registers or logs in or updates his profile and stored in the browser's local storage).
+If it's ok, we compare the refresh_token in the cookie with the refresh_token we have in the database and check if the user is still active.
+if it's ok, we check that the refresh_token is not expired, we decode it and get all the parameters of the user in the database.
+we create a user object.
+We update the acces_token and the refresh_token.
+If it's ok, we continue, we go to the controller with a new access_token and a new refresh_token.
+*/
 const jwt = require("jsonwebtoken")
 const pool = require('../config/db.js')
 

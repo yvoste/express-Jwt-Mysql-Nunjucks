@@ -40,6 +40,10 @@ var articles = {
   add: function() {
     window.location.href = glob.APIURL + 'post'
   },
+  // called to diplay an article
+  detail: function(id){
+    window.location.href = glob.APIURL + 'article/' + id          
+  },  
 
   addArticle: function(e){
     e.preventDefault()
@@ -67,9 +71,7 @@ var articles = {
     objReq.request(_url, requestOptions, redir)    
   },
 
-  detail: function(id){
-    window.location.href = glob.APIURL + 'article/' + id          
-  },  
+  
 
   delete: function(id) {
     const xsrfToken = tools.getToken()

@@ -1,3 +1,12 @@
+/*
+This middleware is called by all the authentificated routes.
+It checked the presence of the access_token cookie and the x-xrf-token in headers
+( for memory, the x-xrf-token is created when the user signup or signin or update profil and it is stocked in the local storage on browser)
+If it's ok it verify the access_token with the secret key (in .env)
+If the token is alive, it create the attribut ' valid ' in object user and it give it hte value zero, it decode the containig of the token and retrieve the user id then we get all paramters of the user in Database
+if respons is correct we continue
+else we send to the refresh an object user undefined
+*/
 const jwt = require("jsonwebtoken")
 const pool = require('../config/db.js')
 
@@ -43,9 +52,7 @@ module.exports = async(req, res, next) => {
             next()       
         } else {
             res.status(400).json({msg: "Invalid Token."})
-        }
-        
-        
+        } 
     }
 }
 
