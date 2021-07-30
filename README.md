@@ -29,7 +29,7 @@ Private Blog for an entreprise.
 ***
 The users of the blog must be registered and then have the right to read the published messages, but also to write them.
 ### Screenshot
-![Image text](https://zupimages.net/viewer.php?id=21/30/5y08.png)
+![Image text](https://www.zupimages.net/up/21/30/plbs.jpg)
 ## Technologies
 ***
 A list of technologies used within the project:
