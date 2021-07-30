@@ -29,7 +29,7 @@ var storage = multer.diskStorage({
   // it's used to create specific filename of the image who is used in url_image in Database
   filename: (req, file, callBack) => {
     const newname = file.originalname.split('.')
-    callBack(null, newname[0] + '-' + req.user.id_user + '-' + Date.now() + path.extname(file.originalname))
+    callBack(null, newname[0] + '-' + Date.now() + path.extname(file.originalname))
   }
 })
 // Do upload

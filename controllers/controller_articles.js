@@ -115,12 +115,13 @@ const { join } = require('path');
  */
  const add = async(req, res, next) => {
   console.log('ADD_ARTICLE')
-  //console.log(req.body)  
+  //console.log(req.body)
+  const url = req.body.author +'/' + req.body.file
   try {
     let sql = 'INSERT INTO articles'
     sql += ' (`title`, `content`, `url_img`, `author`, `status`, `date_add`, `date_update`)'
     sql += ' VALUES (?, ?, ?, ?, ?, ?, ?)'
-    const values = [req.body.title, req.body.content, req.body.file, req.body.author, req.body.status, dateIs, dateIs]
+    const values = [req.body.title, req.body.content, url, req.body.author, req.body.status, dateIs, dateIs]
     const result = await pool.execute (sql, values)
 
     const ret = result[0].insertId
@@ -154,7 +155,7 @@ const article = async (req, res) => {
     //console.log(req.params.id)
     const article = raws[0]
     if (article.url_img !== "") {
-      article.url_img = "/img/" + req.user.nickname + "/" + article.url_img
+      article.url_img = "/img/" + article.url_img
       const tp = article.url_img.split('.')[0]
       article.alt = tp.split('/')[3]
     }
@@ -206,7 +207,7 @@ const editArticle = async (req, res) => {
     const article = raws[0]
     if (article.url_img !== "") {
       article.name_img = article.url_img
-      article.url_img = "/img/" + req.user.nickname + "/" + article.url_img
+      article.url_img = "/img/" + article.url_img
       const tp = article.url_img.split('.')[0]
       article.alt = tp.split('/')[3]
     }
@@ -239,10 +240,15 @@ Update an article
 */
 const update= async(req, res, next) => {
   console.log('UPDATE_ARTICLE')
-  //console.log(req.body)  
+  //console.log(req.body)
+	let url = req.body.file  
+  const file = req.body.file .split('/')  
+  if(typeof(file[1]) === 'undefined'){    
+    url = req.body.author +'/' + req.body.file  
+  }
   try { 
     const sql = 'UPDATE `articles` SET `title` = ? , `content` = ?, `url_img` = ?, `date_update` = ? WHERE `id_article` = ?'    
-    const value = [req.body.title, req.body.content, req.body.file, dateIs, req.body.id_article]
+    const value = [req.body.title, req.body.content, url, dateIs, req.body.id_article]
     const result = await pool.execute (sql, value)
     if(result[0].affectedRows === 1){
       res.send({'msg': 'Item updated successfully'})
