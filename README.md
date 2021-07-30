@@ -48,10 +48,11 @@ A list of technologies used within the project:
 ***
 Important: you must install a mysql database (current name p7 see .env file) before launching the application otherwise it will not be able to install the necessary tables (see config/db.js file) then it crashed
 ***
-$ git clone https://github.com/yvoste/express-Jwt-Mysql-Nunjucks.git
-$ npm install
-$ create sql data base in phpMyAdmin (name of DB: p7 see file .env)
-$ node index.js (nodemon index.js)
+```
+- git clone https://github.com/yvoste/express-Jwt-Mysql-Nunjucks.git
+- npm install
+- create sql data base in phpMyAdmin (name of DB: p7 see file .env)
+- node index.js (nodemon index.js)
 ```
 Side information: To use the application:
 
