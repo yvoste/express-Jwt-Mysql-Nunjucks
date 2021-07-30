@@ -29,7 +29,7 @@ Private Blog for an entreprise.
 ***
 The users of the blog must be registered and then have the right to read the published messages, but also to write them.
 ### Screenshot
-![Image text](https://www.united-internet.de/fileadmin/user_upload/Brands/Downloads/Logo_IONOS_by.jpg)
+![Image text](https://zupimages.net/viewer.php?id=21/30/5y08.png)
 ## Technologies
 ***
 A list of technologies used within the project:
