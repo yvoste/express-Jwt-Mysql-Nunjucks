@@ -1,0 +1,26 @@
+{% extends "../index.html" %}
+{% block content %}
+  <div class="row">   
+    <form name="formAdd" class="col-md-12 needs-validation" novalidate>        
+        <div class="col-md-12">
+          <label for="title" class="col-sm-2 col-form-label">Title</label>        
+          <input type="text" class="form-control" name="title" id="title" placeholder="Title required"  required>
+        </div>
+          <div class="col-md-12">
+          <label for="name" class="col-sm-2 col-form-label">Content</label>
+          <textarea type="text" class="form-control" name="content" id="content" placeholder="Required some content" required></textarea>
+        </div>
+        <label for="fileImg" class="form-label">Add a file (jpeg/jpg/png)</label>
+        <div class="input-group mb-3">          
+          <input type="file" class="form-control" name ="fileImg" id="fileImg" onchange="objFiles.uploadFile(event)" >
+          <button class="btn btn-outline-secondary" type="button" onclick="objFiles.removeFile()">Remove</button>
+          <input type="hidden" id="uploadedFileName" value="">
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-primary" onclick="articles.addArticle(event)">Add</button>
+        </div>    
+    </form>
+  </div>  
+{%endblock %}
+
+

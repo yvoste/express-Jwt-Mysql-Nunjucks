@@ -1,0 +1,36 @@
+
+<input type="hidden" id="tot" value="{{tot}}">
+<div id="list_articles">
+    <div class="jumbotron flex">            
+        <div class="col-md-12">                 
+            <div class="list-group">
+                {% for article in articles %}
+                <a onclick="articles.detail({{article.id_article}})" class="list-group-item list-group-item-action pot" aria-current="true">                    
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{article.title}}</h5>
+                        {% if article.isOld < 24 %}
+                            <small>Published {{article.isOld}} hours ago</small>
+                        {% else %}
+                            <small>Published {{ (article.isOld / 24) | int }} days ago</small>
+                        {% endif %}
+                    </div>
+                    <p class="mb-1">
+                        {{article.content | truncate(80)}}
+                    </p>
+                    <div class="d-flex w-100 justify-content-between">
+                        <small>
+                            Author {{article.author}}.
+                        </small>
+                        <p>                            
+                            nb comments                            
+                            <span class="badge bg-primary rounded-pill">
+                                {{article.nbcomments}}
+                            </span>
+                        </p>
+                    </div>
+                </a>
+                {% endfor %}                   
+            </div>
+        </div>
+    </div>
+</div>

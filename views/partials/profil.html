@@ -1,0 +1,15 @@
+<div class="row">   
+    <form name="formProfil" class="col-md-6 needs-validation" novalidate>        
+         <div class="col-md-12">
+          <label for="email" class="col-sm-2 col-form-label">Email</label>        
+          <input type="email" class="form-control" name="email" id="mail" value="{{email}}">
+        </div>
+         <div class="col-md-12">
+          <label for="name" class="col-sm-2 col-form-label">User Name</label>
+          <input type="text" class="form-control" name="nickname" id="nickname"  value="{{nickname}}">
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-primary" onclick="users.updateProfil(event)">Update</button>
+        </div>    
+    </form>
+  </div>

@@ -1,0 +1,199 @@
+.img-respons{
+  width: 250px;
+}
+.bg-3 { 
+  background-color: #ffffff;
+  color: #555555;
+}
+.container-fluid {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+.navbar {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+  font-size: 12px;
+  letter-spacing: 5px;
+}
+.navbar-nav  li a:hover {
+  color: #1abc9c !important;
+}
+
+.active>a {
+color: #1abc9c !important;
+}
+
+.show{
+  display:block;
+}
+.hide{
+  display:none;
+}
+.navbar-nav{
+  flex-direction: row!important;
+}
+.nav-item{
+  padding-left:0.75rem;
+}
+.pot{
+  cursor: pointer;
+}
+.pot:hover{
+  color: #1abc9c !important;
+}
+
+.fadeOut {
+  animation: fadeOut 2s linear forwards;
+}
+
+@keyframes fadeOut {
+0% { opacity:1; }
+100% { opacity:0; } 
+}
+
+.fadeIn {
+  animation: fadeIn 1s linear forwards;
+}
+
+@keyframes fadeIn {
+0% { opacity:0; }
+100% { opacity:1; } 
+}
+
+.elemFlex{
+  display: flex; 
+  margin-top: 12px;
+}
+.posBottom{
+  margin-bottom:20px;
+}
+.artSize{
+  max-width: 150px;
+}
+.parent {
+  display: flex;
+}
+.child {
+  margin-left: auto;
+  order: 2;
+}
+.lbToSelect{
+  margin: 5px 5px 0 15px;
+}
+#howmany{
+  margin: 0 15px 0 5px;
+  width:auto;
+  display: inline-block;
+}
+.extra{
+  margin: 0 5px 0 15px;
+}
+.form-check-label{
+  color: #0a58ca;
+}
+.form-check{
+  padding-top: 7px;
+}
+.datpick{
+  width: 110px !important;
+}
+/*DETAPICKER*/
+/*
+*
+* ==========================================
+* Corps de page & TITRE & CONTENEUR
+* ==========================================
+*
+*/
+
+.container {
+  margin-top: 100px;
+}
+
+/*
+*
+* ==========================================
+* PERSONNALISATION DU CHAMP
+* ==========================================
+*
+*/
+.input-group {
+  border-radius: 5px;
+}
+
+input.form-control {
+  border-radius: 5px 0 0 5px;
+  border: solid 1px rgba(0,0,0,.15);
+  border-right: none;
+}
+
+input.form-control:focus {
+  box-shadow: none;
+  border-color: rgba(0,0,0,.15);
+}
+
+input.form-control::placeholder {
+  font-family: 'Open sans', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.input-group-append {
+  border: solid 1px rgba(0,0,0,.15);
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+}
+
+.input-group-text {
+  border-radius: 0 5px 5px 0;
+  color: #04c;
+  background-color: #fff;
+  border: none;
+}
+
+/*
+*
+* ==========================================
+* PERSONNALISATION DU CALENDRIER
+* ==========================================
+*
+*/
+.datepicker-dropdown {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 102px;
+}
+
+.datepicker {
+  padding: 0;
+}
+
+.datepicker td, .datepicker th {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.85rem;
+}
+
+.datepicker-dropdown:after {
+  border-bottom-color: #08c;
+}
+
+.datepicker-days .table-condensed thead tr:nth-child(2), .datepicker-months .table-condensed thead tr:nth-child(2),
+.datepicker-years .table-condensed thead tr:nth-child(2), .datepicker-decades .table-condensed thead tr:nth-child(2),
+.datepicker-centuries .table-condensed thead tr:nth-child(2) {
+  background: linear-gradient(to bottom,#08c,#04c);
+  color: #fff;
+}
+.datepicker-days .table-condensed thead tr:nth-child(2) th:hover, .datepicker-months .table-condensed thead tr:nth-child(2) th:hover,
+.datepicker-years .table-condensed thead tr:nth-child(2) th:hover,.datepicker-decades .table-condensed thead tr:nth-child(2) th:hover,
+.datepicker-centuries .table-condensed thead tr:nth-child(2) th:hover {
+  background: linear-gradient(to bottom,#08c,#04c);
+  color: #fff;
+}
+
+.datepicker-days .table-condensed tfoot, .datepicker-months .table-condensed tfoot, .datepicker-years .table-condensed tfoot,
+.datepicker-decades .table-condensed tfoot, .datepicker-centuries .table-condensed tfoot {
+  border-top: solid 1px rgba(0,0,0,.15);
+}

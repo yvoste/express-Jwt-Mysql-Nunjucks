@@ -1,0 +1,42 @@
+<div class="row">   
+  <form name="formAdd" class="col-md-12 needs-validation" novalidate>        
+      <div class="col-md-12">
+        <label for="title" class="col-sm-2 col-form-label">Title</label>        
+        <input type="text" 
+          class="form-control" 
+          name="title" id="title" 
+          placeholder="Title required"  
+          value="{{article.title}}"
+        >
+      </div>
+      <div class="col-md-12">
+        <label for="name" class="col-sm-2 col-form-label">Content</label>
+        <textarea type="text" class="form-control" name="content" id="content">
+          {{article.content}} 
+        </textarea>
+        <label class="col-sm-12 col-form-label"><small>Author :</small><strong>{{article.author}}.</strong></label>
+        {% if article.url_img !== "" %}
+          <label for="image" class="col-sm-12 col-form-label">Image Already in content, if you add a new image the existing will replaced</label>        
+          <img class="artSize" src="{{article.url_img}}" alt="{{article.alt}}">
+        {% endif %}
+      </div>
+      {% if article.url_img !== "" %}
+        <label for="fileImg" class="form-label">you can put a remplacing file (jpeg/jpg/png)</label>
+      {% else %}
+         <label for="fileImg" class="form-label">Add a file (jpeg/jpg/png)</label>
+      {% endif %}     
+        <div class="input-group mb-3">          
+          <input type="file" class="form-control" name ="fileImg" id="fileImg" onchange="objFiles.uploadFile(event)" >
+          <button class="btn btn-outline-secondary" type="button" onclick="objFiles.removeFile()">Remove</button>
+          <input type="hidden" id="uploadedFileName" value="">
+          {% if article.url_img !== "" %}
+            <input type="hidden" id="uploadedFileName" value="{{article.name_img}}">            
+          {% else %}
+            <input type="hidden" id="uploadedFileName" value="">
+          {% endif %}
+        </div>
+      <div class="col-md-12">
+        <button class="btn btn-primary" onclick="articles.upArticle(event, {{article.id_article}})">Update</button>
+      </div>    
+  </form>
+</div>  

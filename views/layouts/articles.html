@@ -1,0 +1,81 @@
+{% extends "../index.html" %}
+{% block content %}
+
+<div class="row">                    
+    <div class="col-md-10">                
+      <h3> You can add an article, read all articles and post comments for each of them</h3>                
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary " onclick="articles.add()">Add Article</button>
+    </div>
+</div>
+<div class="col-md-12">    
+    <!-- todo filter by date/popular etc...-->
+    <div class="justify-content-center elemFlex">
+        <span> FILTER </span>
+    </div>
+    <div class="justify-content-center elemFlex">
+        <ul class="pagination justify-content-center">            
+            <li class="nav-item">
+                <div class="form-group">
+		            <div id="date1" class=" datepicker date input-group shadow-sm">
+		                <input type="text" placeholder="date start" class="form-control datpick" id="start">
+		            </div>
+		        </div>
+            </li>
+            <li class="nav-item">
+                <div class="form-group">
+		            <div id="date2" class=" datepicker date input-group shadow-sm">
+		                <input type="text" placeholder="date end" class="form-control datpick" id="end">
+		            </div>
+		        </div>
+            </li>        
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="writer" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Author</a>
+                <ul id="autor" class="dropdown-menu">
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="popular" onclick="tools.checkbox()" >
+                    <label class="form-check-label" for="popular">
+                        Most Popular
+                    </label>
+                </div>
+                <!--<a class="nav-link" href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i>  Popular</a>-->
+            </li>          
+        </ul>
+    </div>
+    <div class="justify-content-center elemFlex posBottom">        
+        <div class="extra">
+            <button class="btn btn-primary  btn-sm"  onclick="tools.search()">Search</button>
+        </div> 
+        <div class="extra">
+            <button class="btn btn-primary btn-sm" onclick="tools.clear()">Clear</button>
+        </div>  
+    </div>
+    <div class="justify-content-center elemFlex">
+        <ul class="pagination justify-content-center">
+            <li id="prev" class="page-item" onclick='tools.prev(event)'><a class="page-link" href="#">Previous</a>
+            </li>                        
+            <li id="next" class="page-item" onclick='tools.next(event)'><a class="page-link" href="#">Next</a>
+            </li>
+            <li class="page-item">
+                <label class="lbToSelect"> Display</label>
+                <select id="howmany" class="form-select" onchange="tools.changeRow()">
+                    <option value="4" selected>4</option>
+                    <option value="6">6</option>
+                    <option value="10">10</option>
+                    <option value="0">All</option>
+                </select>
+            </li>
+        </ul>
+    </div>
+    
+    <input type="hidden" id="set" value="0">
+    <h5>List Articles</h5>
+</div>
+<div id="articles">
+
+</div>
+{%endblock %}
