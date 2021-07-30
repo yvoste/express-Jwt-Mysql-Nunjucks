@@ -54,9 +54,26 @@ Important: you must install a mysql database (current name p7 see .env file) bef
 - create sql data base in phpMyAdmin (name of DB: p7 see file .env)
 - node index.js (nodemon index.js)
 ```
-Side information: To use the application:
-
 You can find in file .env all variables necessary.
+
+```
+tokenSecret = "secretkey" # give a solid secret for access token
+tokenLife = 900 # 15 min it's duration life of access token
+refreshTokenSecret = "secretkey2" # give a solid secret for refresh token
+refreshTokenLife = 604800 # 7 days it's duration life of refresh token
+maxAge = 31536000000 # 1 year it's duration life of cookies who carried token
+SALT = 10 # round for bcrypt
+HOST = "localhost" # name of host
+USER = "root"  # access to phpMyAdmin or mysql
+PASSWORD = ""   # password to phpMyAdmin or mysql
+DB = "P7"  # default name to database
+PORT = 8080  #  port to cennect
+URL = "localhost://8080" 
+
+```
+All code is commented to explain it.
+
+How To use the application:
 
 The rights are different according to the user.
 ***
