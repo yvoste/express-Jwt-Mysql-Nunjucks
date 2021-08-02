@@ -12,6 +12,8 @@ const { readFileSync}  = require('fs');
 const { join } = require('path');
 */
 
+
+
 /**
  * Get list of articles
  * if the user is an administrator he has the role value 1 and all the items will be loaded.
