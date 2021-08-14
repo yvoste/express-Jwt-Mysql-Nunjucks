@@ -38,7 +38,7 @@ var articles = {
   
   // called by click on button Add article
   add: function() {
-    window.location.href = glob.APIURL + 'post'
+    window.location.href = glob.APIURL + 'add'
   },
   // called to diplay an article
   detail: function(id){
@@ -67,7 +67,7 @@ var articles = {
       body: JSON.stringify(art) // body data type must match "Content-Type" header
     }
     const _url = glob.APIURL + 'api/edit/add'
-    const redir = glob.APIURL + 'list'
+    const redir = glob.APIURL + 'articles'
     objReq.request(_url, requestOptions, redir)    
   },
 
@@ -88,7 +88,7 @@ var articles = {
     }
     
     const _url = glob.APIURL + 'api/edit/article/'     
-    const redir = glob.APIURL + 'list'
+    const redir = glob.APIURL + 'articles'
     objReq.request(_url, requestOptions, redir)    
   },
 
@@ -107,7 +107,7 @@ var articles = {
     }  
 
     const _url = glob.APIURL + 'api/edit/publish/'     
-    const redir = glob.APIURL + 'list'
+    const redir = glob.APIURL + 'articles'
     objReq.request(_url, requestOptions, redir)    
   },
 
@@ -148,7 +148,7 @@ var articles = {
       body: JSON.stringify(art) // body data type must match "Content-Type" header
     }
     const _url = glob.APIURL + 'api/edit/update'
-    const redir = glob.APIURL + 'list'
+    const redir = glob.APIURL + 'articles'
     objReq.request(_url, requestOptions, redir)   
   } 
 

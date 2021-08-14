@@ -9,9 +9,9 @@ module.exports = app => {
     router.get('/signin', front.signin)
     router.get('/profil', front.profil)
     router.get('/logout', front.logout)
-    router.get('/list', front.articles)
+    router.get('/articles', front.articles)
     router.get('/article/:id', front.article)
-    router.get('/post', front.addArticle)
+    router.get('/add', front.addArticle)
 
     app.use('/', router);
 };

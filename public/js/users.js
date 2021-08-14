@@ -33,7 +33,7 @@ var users = {
         body: JSON.stringify(user) // body data type must match "Content-Type" header
       }
       const _url = glob.APIURL + 'api/user/signup/'
-      const redir = glob.APIURL + 'list'
+      const redir = glob.APIURL + 'articles'
       objReq.request(_url, requestOptions, redir, 'sign')
     } else {
       tools.callAlert('danger', ret.error)
@@ -62,7 +62,7 @@ var users = {
         body: JSON.stringify(user) // body data type must match "Content-Type" header
       }
       const _url = glob.APIURL + 'api/user/signin/'
-      const redir = glob.APIURL + 'list'      
+      const redir = glob.APIURL + 'articles'      
       objReq.request(_url, requestOptions, redir, 'sign')      
     } else {
       tools.callAlert('danger', ret.error)
@@ -105,7 +105,7 @@ var users = {
         body: JSON.stringify(user) // body data type must match "Content-Type" header
       }
       const _url = glob.APIURL + 'api/user/update/'
-      const redir = glob.APIURL + 'list'      
+      const redir = glob.APIURL + 'articles'      
       objReq.request(_url, requestOptions, redir, 'sign')
       
     } else {
@@ -132,6 +132,6 @@ var users = {
   },
 
   cancel: function(){ 
-    window.location.href = glob.APIURL + 'list'  
+    window.location.href = glob.APIURL + 'articles'  
   }
 }

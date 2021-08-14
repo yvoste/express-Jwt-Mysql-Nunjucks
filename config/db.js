@@ -62,6 +62,7 @@ pool.execute('CREATE TABLE IF NOT EXISTS `user` '
 	+ ' ENGINE = InnoDB  DEFAULT CHARSET = utf8')
 }, 500)
 
+
 // the foreign key allows to authenticate the user with the user and to delete the authenticator when deleting the user, the active column allows to manage the user, if the administrator sets it to 0 then the user is no longer allowed to connect and when automatic renew of token he will be banned, otherwise it's fine.
 module.exports =  pool
 

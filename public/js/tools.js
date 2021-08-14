@@ -295,6 +295,7 @@ var tools = {
 // equal to  $(document).ready(function(){})
 window.addEventListener("DOMContentLoaded", (event) => {
   console.log("DOM loaded and analyzed")
+  console.log(location.href)
   // this the only only part of jquery 
   $('#start').datepicker({
     clearBtn: true,
@@ -317,7 +318,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
   if (location.href.match(/signup/) || location.href.match(/signin/)) {
     tools.isOut()
   }
-  if (location.href.match(/list/)) {
+  if (location.href.endsWith('/articles')) {
+    console.log('ARTICLES')
     tools.bindAuthor()    
     tools.isIn()
     authors.getAuthor()    
@@ -326,7 +328,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
     articles.getArticles(pag[0], pag[1], obj)
   }
   
-  if (location.href.match(/article/)){
+  if (location.href.startsWith(glob.APIURL + 'article/')) {
+    console.log('ARTICLE')
     tools.isIn()
     articles.getArticle()
   }

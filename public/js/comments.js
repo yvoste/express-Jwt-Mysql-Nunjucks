@@ -20,7 +20,7 @@ var comments = {
     }
     
     const _url = glob.APIURL + 'api/edit/addComment'
-    const redir = glob.APIURL + 'list'
+    const redir = glob.APIURL + 'articles'
     objReq.request(_url, requestOptions, redir)    
   },
 
@@ -40,7 +40,7 @@ var comments = {
       body: JSON.stringify(comment) // body data type must match "Content-Type" header
     }
     const _url = glob.APIURL + 'api/edit/comment'
-    const redir = glob.APIURL + 'list'
+    const redir = glob.APIURL + 'articles'
     objReq.request(_url, requestOptions, redir)
   },
 
