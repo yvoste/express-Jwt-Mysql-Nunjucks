@@ -318,6 +318,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
   if (location.href.match(/signup/) || location.href.match(/signin/)) {
     tools.isOut()
   }
+
   if (location.href.endsWith('/articles')) {
     console.log('ARTICLES')
     tools.bindAuthor()    
@@ -341,8 +342,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
   if (location.href.match(/''/)) {
     console.log('home')
     tools.isOut()
-  }  
-  
-  
+  }
 })
 
