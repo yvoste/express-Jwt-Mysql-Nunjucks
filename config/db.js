@@ -63,10 +63,32 @@ The active column allows to manage the user, if the administrator sets it to 0 t
 */
 
 async function creating() {
-	await pool.execute(sql1)
-	await pool.execute(sql2)
-	await pool.execute(sql3)
-	await pool.execute(sql4)
+	var error = 0
+	const [rows, fields] = await pool.execute(sql1)
+	if(fields !== null){
+		const [r, f] = await pool.execute(sql4)
+		if(f === 'undefined'){
+			error = 1
+		}
+
+	} else {
+		error = 1
+	}
+	const [raws, foelds] = await pool.execute(sql2)
+	if(foelds !== null){
+		const [re, fe] = await pool.execute(sql3)
+		if(fe === 'undefined'){
+			error = 1
+		}
+	}
+	else {
+		error = 1
+	}
+	if(error == 1){
+		console.log('An error occured during creating tables')
+	} else {
+		console.log('the tables hab been created')
+	}	
 }
 
 creating()

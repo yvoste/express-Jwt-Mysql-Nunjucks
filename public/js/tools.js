@@ -45,6 +45,15 @@ var tools = {
     } else {
       this.isOut()
     }
+    //when installing test if  all tables are installing well
+    const test = document.getElementById('testDB')
+    if(test !== null){
+      const val = test.value
+      if( val != 1){
+        this.callAlert('danger', val)
+      }
+    }
+    
   },  
   // it's called at each return of the backend to diplay the result
   callAlert: function(type, msg) {
