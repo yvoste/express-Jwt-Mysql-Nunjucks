@@ -4,7 +4,7 @@ var tools = {
     this.dataStorage()
     this.states()    
   },  
-  //called by tools.selector(data.autors) in request..js, it fill selector with the result of database request
+  //called by tools.selector(data.autors) in request.js, it fill selector with the result of database request
   selector: function(data){  
     let str = ''
     data.forEach(function(autor, index){

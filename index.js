@@ -8,8 +8,8 @@ const express = require("express")
 const cookieParser = require('cookie-parser') // read cookie in request
 const app = express()
 
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json());
+app.use(express.urlencoded({ extended: false })) // support for html forms
+app.use(express.json()); // support JSON
 
 const PORT = process.env.PORT;
 
@@ -39,7 +39,7 @@ nunjucks.configure('views', { // setting default views folder
   express: app
 })
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public'))) //serves all files contained in the public folder
 
 require("./routes/front_routes")(app)
 
