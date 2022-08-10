@@ -20,6 +20,7 @@ const corsOptions = {
 app.use(cookieParser())
 
 
+
 // Then pass them to cors:
 app.use(cors(corsOptions))
 

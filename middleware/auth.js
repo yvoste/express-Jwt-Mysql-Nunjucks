@@ -29,7 +29,9 @@ module.exports = async(req, res, next) => {
         const xsrfToken = headers['x-xsrf-token']
         
         req.user = jwt.verify(accessToken, process.env.tokenSecret)
-        req.user.invalid = 0
+        req.user.invalid = 0;
+        console.log('_________________req.user__________________')
+        console.log(req.user)
         /* We check token CSRF is equal to the one present in JWT  */
         if (xsrfToken !== req.user.xsrfToken) {
             return res.status(401).json({msg: 'Bad xsrf token' });
